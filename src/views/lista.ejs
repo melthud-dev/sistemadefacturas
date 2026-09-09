@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Comprobantes - Recibera</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <a href="/comprobantes">Recibera</a>
+    <div>
+      <a href="/comprobantes/nuevo" class="btn" style="margin-right:10px;">+ Nuevo comprobante</a>
+      <form method="POST" action="/logout" style="display:inline;"><button type="submit" style="background:#6b7280;">Salir</button></form>
+    </div>
+  </div>
+
+  <div class="container" style="max-width: 960px;">
+    <div class="card">
+      <h1>Comprobantes emitidos</h1>
+
+      <% if (comprobantes.length === 0) { %>
+        <p style="color:#6b7280;">Aun no hay comprobantes. <a href="/comprobantes/nuevo">Crea el primero</a>.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Numero</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% comprobantes.forEach(c => { %>
+              <tr>
+                <td><%= c.numero %></td>
+                <td><%= new Date(c.fecha).toLocaleDateString('es-EC') %></td>
+                <td><%= c.cliente_nombre %></td>
+                <td><%= c.moneda %> <%= Number(c.monto).toFixed(2) %></td>
+                <td><span class="badge badge-<%= c.estado %>"><%= c.estado %></span></td>
+                <td><a href="/comprobantes/<%= c.id %>">Ver</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

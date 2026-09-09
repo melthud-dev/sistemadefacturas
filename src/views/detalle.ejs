@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= comprobante.numero %> - Recibera</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <a href="/comprobantes">&larr; Recibera</a>
+    <form method="POST" action="/logout"><button type="submit" style="margin:0; background:#6b7280;">Salir</button></form>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h1><%= comprobante.numero %> <span class="badge badge-<%= comprobante.estado %>"><%= comprobante.estado %></span></h1>
+
+      <p><strong>Fecha:</strong> <%= new Date(comprobante.fecha).toLocaleDateString('es-EC') %></p>
+      <p><strong>Cliente:</strong> <%= comprobante.cliente_nombre %></p>
+      <% if (comprobante.cliente_doc) { %><p><strong>Documento:</strong> <%= comprobante.cliente_doc %></p><% } %>
+      <% if (comprobante.cliente_email) { %><p><strong>Correo:</strong> <%= comprobante.cliente_email %></p><% } %>
+      <p><strong>Concepto:</strong> <%= comprobante.concepto %></p>
+      <% if (comprobante.metodo_pago) { %><p><strong>Metodo de pago:</strong> <%= comprobante.metodo_pago %></p><% } %>
+      <p><strong>Monto:</strong> <%= comprobante.moneda %> <%= Number(comprobante.monto).toFixed(2) %></p>
+
+      <% if (comprobante.estado === 'error_envio') { %>
+        <div class="error">No se pudo enviar el correo: <%= comprobante.error_envio %></div>
+      <% } %>
+
+      <div class="row-actions">
+        <a class="btn" href="/comprobantes/<%= comprobante.id %>/pdf">Descargar PDF</a>
+        <a class="btn" style="background:#6b7280;" href="/comprobantes/nuevo">Nuevo comprobante</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

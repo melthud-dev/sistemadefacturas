@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ingresar - Recibera</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container" style="margin-top: 100px;">
+    <div class="card">
+      <h1>Recibera</h1>
+      <p style="color:#6b7280; margin-top:-10px;">Ingresa con tu usuario de contabilidad.</p>
+
+      <% if (error) { %>
+        <div class="error"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/login">
+        <label for="username">Usuario</label>
+        <input type="text" id="username" name="username" required autofocus />
+
+        <label for="password">Contrasena</label>
+        <input type="password" id="password" name="password" required />
+
+        <button type="submit">Ingresar</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
