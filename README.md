@@ -23,7 +23,7 @@ Edita `.env` y completa:
 
 - `POSTGRES_PASSWORD`: una clave fuerte para la base de datos.
 - `SESSION_SECRET`: una cadena aleatoria larga (por ejemplo `openssl rand -hex 32`).
-- `SMTP_USER` / `SMTP_PASS`: tu correo de Gmail y una **contraseña de aplicación** (no tu contraseña normal). Se genera en https://myaccount.google.com/apppasswords (requiere verificación en 2 pasos activada en la cuenta de Google).
+- `SMTP_USER` / `SMTP_PASS` / `SMTP_HOST`: el correo, contraseña y host SMTP de tu correo privado (hosting/cPanel). Lo encuentras en cPanel → Email Accounts → Connect Devices.
 - `TUNNEL_TOKEN`: lo obtienes en el paso 4 (Cloudflare Tunnel).
 
 ## 2. Levantar el proyecto en Docker
