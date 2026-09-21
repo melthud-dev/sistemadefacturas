@@ -4,6 +4,7 @@ const PDFDocument = require('pdfkit');
 
 const PDFS_DIR = path.join(__dirname, '..', '..', 'data', 'pdfs');
 const FONTS_DIR = path.join(__dirname, '..', 'assets', 'fonts');
+const WATERMARK_PATH = path.join(__dirname, '..', 'assets', 'images', 'bqc-watermark.png');
 
 if (!fs.existsSync(PDFS_DIR)) {
   fs.mkdirSync(PDFS_DIR, { recursive: true });
@@ -98,9 +99,9 @@ function generarComprobantePDF(comprobante) {
 
     doc
       .font(FONT.headingBold)
-      .fontSize(19)
+      .fontSize(17)
       .fillColor(COLOR.white)
-      .text('RECIBERA', marginX, 42, { characterSpacing: 0.5 });
+      .text('BQC Comprobante', marginX, 42, { characterSpacing: 0.3 });
     doc
       .rect(marginX, 68, 26, 3)
       .fill(COLOR.accent);
@@ -192,21 +193,34 @@ function generarComprobantePDF(comprobante) {
       .fillColor(COLOR.accent)
       .text(formatMonto(monto, moneda), innerX, cursorY, { width: innerW, align: 'right' });
 
+    // ===== Marca de agua (anti-falsificacion) =====
+    if (fs.existsSync(WATERMARK_PATH)) {
+      const wmW = 440;
+      const wmH = wmW * (533 / 923);
+      const wmX = (pageW - wmW) / 2;
+      const wmY = cardY + (430 - wmH) / 2;
+      doc.image(WATERMARK_PATH, wmX, wmY, { width: wmW, height: wmH });
+    }
+
     // ===== Pie de pagina =====
     const footerY = cardY + 430 + 26;
     doc
-      .font(FONT.body)
-      .fontSize(9)
-      .fillColor(COLOR.faint)
-      .text('Este documento es un comprobante interno y no constituye factura electronica autorizada por el SRI.', marginX, footerY, {
+      .font(FONT.bodySemiBold)
+      .fontSize(9.5)
+      .fillColor(COLOR.inkSoft)
+      .text('BQC - SOLO EL CIELO ES EL LIMITE', marginX, footerY, {
         width: cardW,
         align: 'center',
+        characterSpacing: 0.4,
       });
     doc
       .font(FONT.body)
       .fontSize(8.5)
       .fillColor(COLOR.faint)
-      .text('Generado automaticamente por Recibera', marginX, footerY + 16, { width: cardW, align: 'center' });
+      .text('Direccion: Teofilo Saenza y Eduardo Kigman - Riobamba - Ecuador.', marginX, footerY + 15, {
+        width: cardW,
+        align: 'center',
+      });
 
     doc.end();
 
