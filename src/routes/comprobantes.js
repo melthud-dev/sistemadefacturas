@@ -11,7 +11,19 @@ router.get('/', async (req, res) => {
   const { rows } = await pool.query(
     'SELECT * FROM comprobantes ORDER BY created_at DESC LIMIT 200'
   );
-  res.render('lista', { comprobantes: rows });
+
+  const inicioMes = new Date();
+  inicioMes.setDate(1);
+  inicioMes.setHours(0, 0, 0, 0);
+  const esteMes = rows.filter((c) => new Date(c.created_at) >= inicioMes);
+
+  const stats = {
+    totalMes: esteMes.length,
+    montoTotalMes: esteMes.reduce((sum, c) => sum + Number(c.monto), 0),
+    enviadosMes: esteMes.filter((c) => c.estado === 'enviado').length,
+  };
+
+  res.render('lista', { comprobantes: rows, stats });
 });
 
 // Formulario de nuevo comprobante
@@ -130,6 +142,42 @@ router.get('/:id', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM comprobantes WHERE id = $1', [req.params.id]);
   if (!rows[0]) return res.status(404).send('Comprobante no encontrado');
   res.render('detalle', { comprobante: rows[0] });
+});
+
+// Reenviar el correo de un comprobante ya existente
+router.post('/:id/reenviar', async (req, res) => {
+  const { rows } = await pool.query('SELECT * FROM comprobantes WHERE id = $1', [req.params.id]);
+  const comprobante = rows[0];
+  if (!comprobante) return res.status(404).send('Comprobante no encontrado');
+
+  if (!comprobante.cliente_email) {
+    return res.redirect(`/comprobantes/${comprobante.id}`);
+  }
+
+  const absolutePath = path.join(PDFS_DIR, comprobante.pdf_path);
+
+  try {
+    await enviarComprobantePorCorreo({
+      to: comprobante.cliente_email,
+      numero: comprobante.numero,
+      cliente_nombre: comprobante.cliente_nombre,
+      monto: comprobante.monto,
+      moneda: comprobante.moneda,
+      pdfAbsolutePath: absolutePath,
+    });
+    await pool.query(
+      "UPDATE comprobantes SET estado = 'enviado', enviado_email = true, error_envio = NULL WHERE id = $1",
+      [comprobante.id]
+    );
+  } catch (mailErr) {
+    console.error('Error reenviando correo', mailErr);
+    await pool.query(
+      "UPDATE comprobantes SET estado = 'error_envio', error_envio = $2 WHERE id = $1",
+      [comprobante.id, mailErr.message]
+    );
+  }
+
+  res.redirect(`/comprobantes/${comprobante.id}`);
 });
 
 // Descargar el PDF

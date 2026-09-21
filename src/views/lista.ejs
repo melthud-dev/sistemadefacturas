@@ -1,50 +1,72 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <%- include('partials/head') %>
   <title>Comprobantes - Recibera</title>
-  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <div class="topbar">
-    <a href="/comprobantes">Recibera</a>
-    <div>
-      <a href="/comprobantes/nuevo" class="btn" style="margin-right:10px;">+ Nuevo comprobante</a>
-      <form method="POST" action="/logout" style="display:inline;"><button type="submit" style="background:#6b7280;">Salir</button></form>
-    </div>
-  </div>
+  <div class="app-shell">
+    <%- include('partials/sidebar', { active: 'comprobantes' }) %>
 
-  <div class="container" style="max-width: 960px;">
-    <div class="card">
-      <h1>Comprobantes emitidos</h1>
+    <div class="content">
+      <div class="page-header">
+        <div>
+          <h1>Comprobantes</h1>
+          <div class="sub"><%= comprobantes.length %> comprobante<%= comprobantes.length === 1 ? '' : 's' %> en total</div>
+        </div>
+        <a href="/comprobantes/nuevo" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Nuevo comprobante
+        </a>
+      </div>
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="label">Emitidos este mes</div>
+          <div class="value"><%= stats.totalMes %></div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Monto total este mes</div>
+          <div class="value">USD <%= stats.montoTotalMes.toFixed(2) %></div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Enviados por correo</div>
+          <div class="value accent"><%= stats.enviadosMes %> de <%= stats.totalMes %></div>
+        </div>
+      </div>
 
       <% if (comprobantes.length === 0) { %>
-        <p style="color:#6b7280;">Aun no hay comprobantes. <a href="/comprobantes/nuevo">Crea el primero</a>.</p>
+        <div class="table-card">
+          <div class="empty-state">Aún no hay comprobantes. <a href="/comprobantes/nuevo" style="color:var(--accent);font-weight:600;">Crea el primero</a>.</div>
+        </div>
       <% } else { %>
-        <table>
-          <thead>
-            <tr>
-              <th>Numero</th>
-              <th>Fecha</th>
-              <th>Cliente</th>
-              <th>Monto</th>
-              <th>Estado</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
+        <div class="table-card">
+          <div class="table-row table-head">
+            <span>Número</span>
+            <span>Cliente</span>
+            <span>Fecha</span>
+            <span>Monto</span>
+            <span>Estado</span>
+            <span></span>
+          </div>
+          <div class="table-body">
             <% comprobantes.forEach(c => { %>
-              <tr>
-                <td><%= c.numero %></td>
-                <td><%= new Date(c.fecha).toLocaleDateString('es-EC') %></td>
-                <td><%= c.cliente_nombre %></td>
-                <td><%= c.moneda %> <%= Number(c.monto).toFixed(2) %></td>
-                <td><span class="badge badge-<%= c.estado %>"><%= c.estado %></span></td>
-                <td><a href="/comprobantes/<%= c.id %>">Ver</a></td>
-              </tr>
+              <a href="/comprobantes/<%= c.id %>" class="table-row">
+                <span class="numero"><%= c.numero %></span>
+                <span class="cliente"><%= c.cliente_nombre %></span>
+                <span class="fecha"><%= new Date(c.fecha).toLocaleDateString('es-EC') %></span>
+                <span class="monto"><%= c.moneda %> <%= Number(c.monto).toFixed(2) %></span>
+                <span>
+                  <span class="badge badge-<%= c.estado %>">
+                    <span class="dot"></span>
+                    <% if (c.estado === 'enviado') { %>Enviado<% } else if (c.estado === 'emitido') { %>Emitido<% } else { %>Error de envío<% } %>
+                  </span>
+                </span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A39C8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
             <% }) %>
-          </tbody>
-        </table>
+          </div>
+        </div>
       <% } %>
     </div>
   </div>

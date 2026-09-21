@@ -1,35 +1,138 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <%- include('partials/head') %>
   <title><%= comprobante.numero %> - Recibera</title>
-  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <div class="topbar">
-    <a href="/comprobantes">&larr; Recibera</a>
-    <form method="POST" action="/logout"><button type="submit" style="margin:0; background:#6b7280;">Salir</button></form>
-  </div>
+  <div class="app-shell">
+    <%- include('partials/sidebar', { active: 'comprobantes' }) %>
 
-  <div class="container">
-    <div class="card">
-      <h1><%= comprobante.numero %> <span class="badge badge-<%= comprobante.estado %>"><%= comprobante.estado %></span></h1>
+    <div class="content">
+      <div class="breadcrumb">
+        <a href="/comprobantes">Comprobantes</a>
+        <span class="sep">/</span>
+        <span class="current"><%= comprobante.numero %></span>
+      </div>
+      <div class="page-header" style="margin-top:6px;align-items:center;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <h1><%= comprobante.numero %></h1>
+          <span class="badge badge-<%= comprobante.estado %>">
+            <span class="dot"></span>
+            <% if (comprobante.estado === 'enviado') { %>Enviado<% } else if (comprobante.estado === 'emitido') { %>Emitido<% } else { %>Error de envío<% } %>
+          </span>
+        </div>
+      </div>
 
-      <p><strong>Fecha:</strong> <%= new Date(comprobante.fecha).toLocaleDateString('es-EC') %></p>
-      <p><strong>Cliente:</strong> <%= comprobante.cliente_nombre %></p>
-      <% if (comprobante.cliente_doc) { %><p><strong>Documento:</strong> <%= comprobante.cliente_doc %></p><% } %>
-      <% if (comprobante.cliente_email) { %><p><strong>Correo:</strong> <%= comprobante.cliente_email %></p><% } %>
-      <p><strong>Concepto:</strong> <%= comprobante.concepto %></p>
-      <% if (comprobante.metodo_pago) { %><p><strong>Metodo de pago:</strong> <%= comprobante.metodo_pago %></p><% } %>
-      <p><strong>Monto:</strong> <%= comprobante.moneda %> <%= Number(comprobante.monto).toFixed(2) %></p>
+      <div style="margin-top:20px;display:flex;gap:24px;align-items:flex-start;">
 
-      <% if (comprobante.estado === 'error_envio') { %>
-        <div class="error">No se pudo enviar el correo: <%= comprobante.error_envio %></div>
-      <% } %>
+        <div style="flex:1.15;display:flex;justify-content:center;">
+          <div class="receipt-card" style="width:420px;">
+            <div class="head">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6B4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2-2 1.2V3z"/></svg>
+              <span>Comprobante de pago</span>
+            </div>
+            <div class="subtitle">Documento interno · sin validez tributaria SRI</div>
 
-      <div class="row-actions">
-        <a class="btn" href="/comprobantes/<%= comprobante.id %>/pdf">Descargar PDF</a>
-        <a class="btn" style="background:#6b7280;" href="/comprobantes/nuevo">Nuevo comprobante</a>
+            <div class="row-between">
+              <div>
+                <div class="label">Número</div>
+                <div class="val"><%= comprobante.numero %></div>
+              </div>
+              <div style="text-align:right;">
+                <div class="label">Fecha</div>
+                <div style="font-size:14px;color:var(--ink);"><%= new Date(comprobante.fecha).toLocaleDateString('es-EC', { day: 'numeric', month: 'short', year: 'numeric' }) %></div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="label">Cliente</div>
+            <div style="margin-top:4px;font-size:14px;color:var(--ink);"><%= comprobante.cliente_nombre %></div>
+            <% if (comprobante.cliente_doc) { %><div style="font-size:13px;color:var(--ink-soft);">Doc: <%= comprobante.cliente_doc %></div><% } %>
+            <% if (comprobante.cliente_email) { %><div style="font-size:13px;color:var(--ink-soft);"><%= comprobante.cliente_email %></div><% } %>
+
+            <div style="margin-top:16px;" class="label">Concepto</div>
+            <div style="margin-top:4px;font-size:13.5px;color:var(--ink);line-height:1.5;"><%= comprobante.concepto %></div>
+            <% if (comprobante.metodo_pago) { %><div style="margin-top:8px;font-size:13px;color:var(--ink-soft);">Método de pago: <%= comprobante.metodo_pago %></div><% } %>
+
+            <div class="divider"></div>
+
+            <div class="total">
+              <div class="label" style="text-transform:none;">Total pagado</div>
+              <div class="amount"><%= comprobante.moneda %> <%= Number(comprobante.monto).toFixed(2) %></div>
+            </div>
+
+            <div class="footer-note">Generado automáticamente por Recibera</div>
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <div class="card">
+            <div style="font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;">Estado del envío</div>
+
+            <div style="margin-top:18px;">
+              <div class="timeline-item">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <div class="timeline-dot">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+                  </div>
+                  <div class="timeline-line"></div>
+                </div>
+                <div style="padding-bottom:18px;">
+                  <div class="timeline-title">Comprobante emitido</div>
+                  <div class="timeline-sub"><%= new Date(comprobante.created_at).toLocaleString('es-EC', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) %></div>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <div class="timeline-dot" style="background:<%= comprobante.estado === 'enviado' ? 'var(--accent)' : (comprobante.estado === 'error_envio' ? 'var(--red)' : '#C7C0AE') %>;">
+                    <% if (comprobante.estado === 'enviado') { %>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+                    <% } else if (comprobante.estado === 'error_envio') { %>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                    <% } else { %>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/></svg>
+                    <% } %>
+                  </div>
+                </div>
+                <div>
+                  <% if (comprobante.estado === 'enviado') { %>
+                    <div class="timeline-title">Enviado por correo</div>
+                    <div class="timeline-sub">a <%= comprobante.cliente_email %></div>
+                  <% } else if (comprobante.estado === 'error_envio') { %>
+                    <div class="timeline-title">Error al enviar correo</div>
+                    <div class="timeline-sub"><%= comprobante.error_envio || 'Ocurrió un error desconocido.' %></div>
+                  <% } else { %>
+                    <div class="timeline-title" style="color:var(--ink-soft);">Sin envío por correo</div>
+                    <div class="timeline-sub"><%= comprobante.cliente_email ? 'Aún no se ha enviado.' : 'El cliente no tiene correo registrado.' %></div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">Acciones</div>
+            <a href="/comprobantes/<%= comprobante.id %>/pdf" class="btn btn-primary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+              Descargar PDF
+            </a>
+            <% if (comprobante.cliente_email) { %>
+              <form method="POST" action="/comprobantes/<%= comprobante.id %>/reenviar" style="margin:0;">
+                <button type="submit" class="btn btn-secondary" style="width:100%;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#15181D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 8l8 6 8-6"/></svg>
+                  Reenviar correo
+                </button>
+              </form>
+            <% } %>
+            <a href="/comprobantes/nuevo" class="btn btn-secondary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#15181D" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Nuevo comprobante
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

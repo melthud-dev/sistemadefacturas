@@ -1,0 +1,30 @@
+<div class="sidebar">
+  <div>
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5F3EE" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2-2 1.2V3z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+      <span>Recibera</span>
+    </div>
+
+    <nav>
+      <a href="/comprobantes" class="<%= active === 'comprobantes' ? 'active' : '' %>">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="<%= active === 'comprobantes' ? '#F5F3EE' : '#9FB3A8' %>" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 10h8M8 14h5"/></svg>
+        Comprobantes
+      </a>
+      <a href="/comprobantes/nuevo" class="<%= active === 'nuevo' ? 'active' : '' %>">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="<%= active === 'nuevo' ? '#F5F3EE' : '#9FB3A8' %>" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nuevo comprobante
+      </a>
+    </nav>
+  </div>
+
+  <div>
+    <div class="sidebar-divider"></div>
+    <div class="userbox">
+      <div class="avatar"><%= (currentUser || '?').slice(0,2).toUpperCase() %></div>
+      <div style="flex-grow:1;min-width:0;">
+        <div class="name"><%= currentUser %></div>
+        <form method="POST" action="/logout"><button type="submit">Cerrar sesión</button></form>
+      </div>
+    </div>
+  </div>
+</div>

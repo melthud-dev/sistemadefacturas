@@ -6,7 +6,7 @@ function requireLogin(req, res, next) {
 }
 
 function attachUser(req, res, next) {
-  res.locals.currentUser = req.session ? req.session.username : null;
+  res.locals.currentUser = req.session ? (req.session.nombre || req.session.username) : null;
   next();
 }
 

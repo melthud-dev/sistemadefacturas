@@ -1,57 +1,129 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <%- include('partials/head') %>
   <title>Nuevo comprobante - Recibera</title>
-  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <div class="topbar">
-    <a href="/comprobantes">&larr; Recibera</a>
-    <form method="POST" action="/logout"><button type="submit" style="margin:0; background:#6b7280;">Salir</button></form>
-  </div>
+  <div class="app-shell">
+    <%- include('partials/sidebar', { active: 'nuevo' }) %>
 
-  <div class="container">
-    <div class="card">
-      <h1>Nuevo comprobante de pago</h1>
+    <div class="content">
+      <div class="breadcrumb">
+        <a href="/comprobantes">Comprobantes</a>
+        <span class="sep">/</span>
+        <span class="current">Nuevo</span>
+      </div>
+      <div class="page-header" style="margin-top:6px;">
+        <h1>Nuevo comprobante</h1>
+      </div>
 
       <% if (error) { %>
-        <div class="error"><%= error %></div>
+        <div class="error" style="margin-top:20px;"><%= error %></div>
       <% } %>
 
-      <form method="POST" action="/comprobantes">
-        <label for="cliente_nombre">Nombre del cliente *</label>
-        <input type="text" id="cliente_nombre" name="cliente_nombre" value="<%= form.cliente_nombre || '' %>" required autofocus />
+      <div style="margin-top:20px;display:flex;gap:24px;align-items:flex-start;">
 
-        <label for="cliente_doc">Documento (cedula/RUC)</label>
-        <input type="text" id="cliente_doc" name="cliente_doc" value="<%= form.cliente_doc || '' %>" />
+        <form method="POST" action="/comprobantes" class="card" style="flex:1.15;">
+          <div class="form-section-title">Datos del cliente</div>
+          <div class="form-grid">
+            <div class="field span-2">
+              <label for="cliente_nombre">Nombre del cliente *</label>
+              <input type="text" id="cliente_nombre" name="cliente_nombre" value="<%= form.cliente_nombre || '' %>" required autofocus oninput="actualizarPreview()" />
+            </div>
+            <div class="field">
+              <label for="cliente_doc">Documento (cédula/RUC)</label>
+              <input type="text" id="cliente_doc" name="cliente_doc" value="<%= form.cliente_doc || '' %>" />
+            </div>
+            <div class="field">
+              <label for="cliente_email">Correo del cliente</label>
+              <input type="email" id="cliente_email" name="cliente_email" value="<%= form.cliente_email || '' %>" placeholder="Para enviar el comprobante" oninput="actualizarPreview()" />
+            </div>
+          </div>
 
-        <label for="cliente_email">Correo del cliente (para enviar el comprobante)</label>
-        <input type="email" id="cliente_email" name="cliente_email" value="<%= form.cliente_email || '' %>" />
+          <div class="form-divider"></div>
 
-        <label for="concepto">Concepto *</label>
-        <textarea id="concepto" name="concepto" rows="3" required><%= form.concepto || '' %></textarea>
+          <div class="form-section-title">Detalle del pago</div>
+          <div class="form-grid">
+            <div class="field span-2">
+              <label for="concepto">Concepto *</label>
+              <textarea id="concepto" name="concepto" rows="2" required oninput="actualizarPreview()"><%= form.concepto || '' %></textarea>
+            </div>
+            <div class="field">
+              <label for="monto">Monto *</label>
+              <input type="number" id="monto" name="monto" step="0.01" min="0.01" value="<%= form.monto || '' %>" required oninput="actualizarPreview()" />
+            </div>
+            <div class="field">
+              <label for="metodo_pago">Método de pago</label>
+              <select id="metodo_pago" name="metodo_pago">
+                <option value="Transferencia">Transferencia</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Tarjeta">Tarjeta</option>
+                <option value="Deposito">Depósito</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <input type="hidden" name="moneda" value="USD" />
+          </div>
 
-        <label for="monto">Monto *</label>
-        <input type="number" id="monto" name="monto" step="0.01" min="0.01" value="<%= form.monto || '' %>" required />
+          <div style="display:flex;gap:12px;margin-top:28px;">
+            <button type="submit" class="btn btn-primary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+              Generar y enviar comprobante
+            </button>
+            <a href="/comprobantes" class="btn btn-secondary">Cancelar</a>
+          </div>
+        </form>
 
-        <label for="moneda">Moneda</label>
-        <select id="moneda" name="moneda">
-          <option value="USD" selected>USD</option>
-        </select>
+        <div class="side-panel">
+          <div style="font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;">Vista previa</div>
+          <div class="receipt-card">
+            <div class="head">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6B4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2-2 1.2V3z"/></svg>
+              <span>Comprobante de pago</span>
+            </div>
+            <div class="subtitle">Documento interno, sin validez tributaria SRI</div>
 
-        <label for="metodo_pago">Metodo de pago</label>
-        <select id="metodo_pago" name="metodo_pago">
-          <option value="Transferencia">Transferencia</option>
-          <option value="Efectivo">Efectivo</option>
-          <option value="Tarjeta">Tarjeta</option>
-          <option value="Deposito">Deposito</option>
-          <option value="Otro">Otro</option>
-        </select>
+            <div class="row-between">
+              <div>
+                <div class="label">Cliente</div>
+                <div class="val" id="preview-cliente" style="margin-top:4px;">—</div>
+              </div>
+            </div>
 
-        <button type="submit">Generar y enviar comprobante</button>
-      </form>
+            <div class="divider"></div>
+
+            <div class="label">Concepto</div>
+            <div id="preview-concepto" style="margin-top:4px;font-size:13px;color:var(--ink);line-height:1.4;">—</div>
+
+            <div class="divider"></div>
+
+            <div class="total">
+              <div class="label" style="text-transform:none;">Total a pagar</div>
+              <div class="amount">USD <span id="preview-monto">0.00</span></div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B6B4F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M4 4h16v16H4z"/><path d="M4 8h16M9 21V8"/></svg>
+            <p>Al guardar se genera el PDF, se archiva automáticamente y se envía por correo al cliente (si registraste su correo).</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <script>
+    function actualizarPreview() {
+      var nombre = document.getElementById('cliente_nombre').value.trim();
+      var concepto = document.getElementById('concepto').value.trim();
+      var monto = parseFloat(document.getElementById('monto').value);
+
+      document.getElementById('preview-cliente').textContent = nombre || '—';
+      document.getElementById('preview-concepto').textContent = concepto || '—';
+      document.getElementById('preview-monto').textContent = isNaN(monto) ? '0.00' : monto.toFixed(2);
+    }
+    actualizarPreview();
+  </script>
 </body>
 </html>

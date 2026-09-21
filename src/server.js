@@ -29,7 +29,11 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 8, // 8 horas
-      secure: process.env.NODE_ENV === 'production',
+      // Solo exigir HTTPS cuando el sitio realmente esta detras de HTTPS
+      // (Cloudflare Tunnel, nginx+certbot, etc). En local por HTTP plano
+      // debe quedar en 'false', si no el navegador descarta la cookie
+      // y el login parece "no funcionar" aunque las credenciales sean correctas.
+      secure: process.env.COOKIE_SECURE === 'true',
       httpOnly: true,
       sameSite: 'lax',
     },
