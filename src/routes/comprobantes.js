@@ -37,6 +37,7 @@ router.post('/', async (req, res) => {
     cliente_nombre,
     cliente_email,
     cliente_doc,
+    programa_academico,
     concepto,
     valor_venta,
     monto,
@@ -89,6 +90,7 @@ router.post('/', async (req, res) => {
       cliente_nombre,
       cliente_email,
       cliente_doc,
+      programa_academico,
       concepto,
       valor_venta: valorVentaNum,
       monto: montoNum,
@@ -99,14 +101,15 @@ router.post('/', async (req, res) => {
 
     const insertResult = await client.query(
       `INSERT INTO comprobantes
-        (numero, cliente_nombre, cliente_email, cliente_doc, concepto, valor_venta, monto, saldo, moneda, metodo_pago, pdf_path, created_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+        (numero, cliente_nombre, cliente_email, cliente_doc, programa_academico, concepto, valor_venta, monto, saldo, moneda, metodo_pago, pdf_path, created_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
        RETURNING *`,
       [
         numero,
         cliente_nombre,
         cliente_email || null,
         cliente_doc || null,
+        programa_academico || null,
         concepto,
         valorVentaNum,
         montoNum,

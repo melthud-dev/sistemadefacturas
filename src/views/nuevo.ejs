@@ -46,6 +46,10 @@
           <div class="form-section-title">Detalle del pago</div>
           <div class="form-grid">
             <div class="field span-2">
+              <label for="programa_academico">Programa Académico</label>
+              <input type="text" id="programa_academico" name="programa_academico" value="<%= form.programa_academico || '' %>" oninput="actualizarPreview()" />
+            </div>
+            <div class="field span-2">
               <label for="concepto">Concepto *</label>
               <textarea id="concepto" name="concepto" rows="2" required oninput="actualizarPreview()"><%= form.concepto || '' %></textarea>
             </div>
@@ -101,6 +105,9 @@
 
             <div class="divider"></div>
 
+            <div class="label" id="preview-programa-label" style="display:none;">Programa académico</div>
+            <div id="preview-programa" style="margin-top:4px;margin-bottom:14px;font-size:13px;color:var(--ink);line-height:1.4;display:none;">—</div>
+
             <div class="label">Concepto</div>
             <div id="preview-concepto" style="margin-top:4px;font-size:13px;color:var(--ink);line-height:1.4;">—</div>
 
@@ -136,12 +143,16 @@
   <script>
     function actualizarPreview() {
       var nombre = document.getElementById('cliente_nombre').value.trim();
+      var programa = document.getElementById('programa_academico').value.trim();
       var concepto = document.getElementById('concepto').value.trim();
       var monto = parseFloat(document.getElementById('monto').value);
       var valorVenta = parseFloat(document.getElementById('valor_venta').value);
       var saldo = parseFloat(document.getElementById('saldo').value);
 
       document.getElementById('preview-cliente').textContent = nombre || '—';
+      document.getElementById('preview-programa-label').style.display = programa ? 'block' : 'none';
+      document.getElementById('preview-programa').style.display = programa ? 'block' : 'none';
+      document.getElementById('preview-programa').textContent = programa || '—';
       document.getElementById('preview-concepto').textContent = concepto || '—';
       document.getElementById('preview-monto').textContent = isNaN(monto) ? '0.00' : monto.toFixed(2);
 

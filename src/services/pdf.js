@@ -69,6 +69,7 @@ function generarComprobantePDF(comprobante) {
     cliente_nombre,
     cliente_email,
     cliente_doc,
+    programa_academico,
     concepto,
     valor_venta,
     monto,
@@ -79,6 +80,7 @@ function generarComprobantePDF(comprobante) {
 
   const tieneValorVentaOSaldo =
     (valor_venta !== null && valor_venta !== undefined) || (saldo !== null && saldo !== undefined);
+  const tieneProgramaAcademico = Boolean(programa_academico);
 
   const fileName = `${numero}.pdf`;
   const relativePath = fileName;
@@ -125,7 +127,7 @@ function generarComprobantePDF(comprobante) {
     // ===== Tarjeta principal =====
     const cardY = headerH + 36;
     const cardPad = 34;
-    const cardH = 430 + (tieneValorVentaOSaldo ? 48 : 0);
+    const cardH = 430 + (tieneValorVentaOSaldo ? 48 : 0) + (tieneProgramaAcademico ? 34 : 0);
     let cursorY = cardY + cardPad;
 
     doc
@@ -170,6 +172,14 @@ function generarComprobantePDF(comprobante) {
     cursorY += 18;
     divider(doc, innerX, cursorY, innerW);
     cursorY += 22;
+
+    // Programa academico (opcional)
+    if (tieneProgramaAcademico) {
+      etiqueta(doc, 'Programa academico', innerX, cursorY);
+      cursorY += 13;
+      doc.font(FONT.bodyMedium).fontSize(11.5).fillColor(COLOR.ink).text(programa_academico, innerX, cursorY, { width: innerW });
+      cursorY = doc.y + 14;
+    }
 
     // Concepto
     etiqueta(doc, 'Concepto', innerX, cursorY);

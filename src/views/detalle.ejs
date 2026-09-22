@@ -52,6 +52,11 @@
             <% if (comprobante.cliente_doc) { %><div style="font-size:13px;color:var(--ink-soft);">CI: <%= comprobante.cliente_doc %></div><% } %>
             <% if (comprobante.cliente_email) { %><div style="font-size:13px;color:var(--ink-soft);"><%= comprobante.cliente_email %></div><% } %>
 
+            <% if (comprobante.programa_academico) { %>
+              <div style="margin-top:16px;" class="label">Programa académico</div>
+              <div style="margin-top:4px;font-size:13.5px;color:var(--ink);line-height:1.5;"><%= comprobante.programa_academico %></div>
+            <% } %>
+
             <div style="margin-top:16px;" class="label">Concepto</div>
             <div style="margin-top:4px;font-size:13.5px;color:var(--ink);line-height:1.5;"><%= comprobante.concepto %></div>
             <% if (comprobante.metodo_pago) { %><div style="margin-top:8px;font-size:13px;color:var(--ink-soft);">Método de pago: <%= comprobante.metodo_pago %></div><% } %>

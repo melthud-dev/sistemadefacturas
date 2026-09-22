@@ -57,7 +57,7 @@
           <div class="table-body" id="tabla-body">
             <% comprobantes.forEach(c => { %>
               <a href="/comprobantes/<%= c.id %>" class="table-row"
-                 data-search="<%= [c.numero, c.cliente_nombre, c.cliente_doc, c.cliente_email, new Date(c.fecha).toLocaleDateString('es-EC'), c.monto, c.moneda, c.estado === 'enviado' ? 'enviado' : (c.estado === 'emitido' ? 'emitido' : 'error de envío')].filter(Boolean).join(' ').toLowerCase() %>">
+                 data-search="<%= [c.numero, c.cliente_nombre, c.cliente_doc, c.cliente_email, c.programa_academico, new Date(c.fecha).toLocaleDateString('es-EC'), c.monto, c.moneda, c.estado === 'enviado' ? 'enviado' : (c.estado === 'emitido' ? 'emitido' : 'error de envío')].filter(Boolean).join(' ').toLowerCase() %>">
                 <span class="numero"><%= c.numero %></span>
                 <span class="cliente"><%= c.cliente_nombre %></span>
                 <span class="fecha"><%= new Date(c.fecha).toLocaleDateString('es-EC') %></span>

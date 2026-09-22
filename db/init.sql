@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS comprobantes (
     cliente_nombre  VARCHAR(200) NOT NULL,
     cliente_email   VARCHAR(200),
     cliente_doc     VARCHAR(50),
+    programa_academico VARCHAR(200),
     concepto        TEXT NOT NULL,
     valor_venta     NUMERIC(12, 2),
     monto           NUMERIC(12, 2) NOT NULL,
