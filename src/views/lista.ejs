@@ -42,13 +42,14 @@
       <% } else { %>
         <div class="search-box" style="margin-top:22px;">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A39C8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-          <input type="text" id="buscador" placeholder="Buscar por número, cliente, cédula, fecha, monto o estado..." oninput="filtrarComprobantes()" />
+          <input type="text" id="buscador" placeholder="Buscar por nombre o cédula..." oninput="filtrarComprobantes()" />
         </div>
 
         <div class="table-card">
           <div class="table-row table-head">
             <span>Número</span>
             <span>Cliente</span>
+            <span>Cédula</span>
             <span>Fecha</span>
             <span>Monto</span>
             <span>Estado</span>
@@ -57,9 +58,10 @@
           <div class="table-body" id="tabla-body">
             <% comprobantes.forEach(c => { %>
               <a href="/comprobantes/<%= c.id %>" class="table-row"
-                 data-search="<%= [c.numero, c.cliente_nombre, c.cliente_doc, c.cliente_email, c.programa_academico, new Date(c.fecha).toLocaleDateString('es-EC'), c.monto, c.moneda, c.estado === 'enviado' ? 'enviado' : (c.estado === 'emitido' ? 'emitido' : 'error de envío')].filter(Boolean).join(' ').toLowerCase() %>">
+                 data-search="<%= [c.cliente_nombre, c.cliente_doc].filter(Boolean).join(' ').toLowerCase() %>">
                 <span class="numero"><%= c.numero %></span>
                 <span class="cliente"><%= c.cliente_nombre %></span>
+                <span class="fecha"><%= c.cliente_doc || '—' %></span>
                 <span class="fecha"><%= new Date(c.fecha).toLocaleDateString('es-EC') %></span>
                 <span class="monto"><%= c.moneda %> <%= Number(c.monto).toFixed(2) %></span>
                 <span>

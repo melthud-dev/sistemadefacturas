@@ -168,8 +168,9 @@ h1, h2, h3, .display { font-family: 'Space Grotesk', sans-serif; }
 /* ===== Table ===== */
 .table-card { margin-top: 22px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .table-row {
-  display: grid; grid-template-columns: 140px 1.4fr 120px 120px 140px 40px;
+  display: grid; grid-template-columns: 130px 1.2fr 110px 100px 110px 130px 36px;
   padding: 14px 20px; align-items: center;
+  gap: 8px;
 }
 .table-head { background: var(--surface-2); border-bottom: 1px solid var(--border); padding: 12px 20px; }
 .table-head span { font-size: 11px; font-weight: 600; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.03em; }
