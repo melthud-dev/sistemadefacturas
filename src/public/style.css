@@ -141,6 +141,17 @@ h1, h2, h3, .display { font-family: 'Space Grotesk', sans-serif; }
 .stat-card .value { margin-top: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600; color: var(--ink); }
 .stat-card .value.accent { color: var(--accent); }
 
+.search-box {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0 14px; height: 42px; max-width: 420px;
+}
+.search-box input {
+  border: none; outline: none; background: none; flex-grow: 1;
+  font-size: 13.5px; color: var(--ink); font-family: inherit; height: 100%;
+}
+.search-box input::placeholder { color: var(--faint, #A39C8C); }
+
 .badge {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 11.5px; font-weight: 600;

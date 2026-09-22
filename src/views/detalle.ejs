@@ -49,7 +49,7 @@
 
             <div class="label">Cliente</div>
             <div style="margin-top:4px;font-size:14px;color:var(--ink);"><%= comprobante.cliente_nombre %></div>
-            <% if (comprobante.cliente_doc) { %><div style="font-size:13px;color:var(--ink-soft);">Doc: <%= comprobante.cliente_doc %></div><% } %>
+            <% if (comprobante.cliente_doc) { %><div style="font-size:13px;color:var(--ink-soft);">CI: <%= comprobante.cliente_doc %></div><% } %>
             <% if (comprobante.cliente_email) { %><div style="font-size:13px;color:var(--ink-soft);"><%= comprobante.cliente_email %></div><% } %>
 
             <div style="margin-top:16px;" class="label">Concepto</div>
@@ -57,6 +57,20 @@
             <% if (comprobante.metodo_pago) { %><div style="margin-top:8px;font-size:13px;color:var(--ink-soft);">Método de pago: <%= comprobante.metodo_pago %></div><% } %>
 
             <div class="divider"></div>
+
+            <% if (comprobante.valor_venta !== null || comprobante.saldo !== null) { %>
+              <div class="row-between">
+                <div>
+                  <div class="label">Valor de venta</div>
+                  <div class="val"><%= comprobante.valor_venta !== null ? comprobante.moneda + ' ' + Number(comprobante.valor_venta).toFixed(2) : '—' %></div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="label">Saldo</div>
+                  <div class="val"><%= comprobante.saldo !== null ? comprobante.moneda + ' ' + Number(comprobante.saldo).toFixed(2) : '—' %></div>
+                </div>
+              </div>
+              <div class="divider"></div>
+            <% } %>
 
             <div class="total">
               <div class="label" style="text-transform:none;">Total pagado</div>

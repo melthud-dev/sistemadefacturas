@@ -70,10 +70,15 @@ function generarComprobantePDF(comprobante) {
     cliente_email,
     cliente_doc,
     concepto,
+    valor_venta,
     monto,
+    saldo,
     moneda,
     metodo_pago,
   } = comprobante;
+
+  const tieneValorVentaOSaldo =
+    (valor_venta !== null && valor_venta !== undefined) || (saldo !== null && saldo !== undefined);
 
   const fileName = `${numero}.pdf`;
   const relativePath = fileName;
@@ -120,10 +125,11 @@ function generarComprobantePDF(comprobante) {
     // ===== Tarjeta principal =====
     const cardY = headerH + 36;
     const cardPad = 34;
+    const cardH = 430 + (tieneValorVentaOSaldo ? 48 : 0);
     let cursorY = cardY + cardPad;
 
     doc
-      .roundedRect(marginX, cardY, cardW, 430, 12)
+      .roundedRect(marginX, cardY, cardW, cardH, 12)
       .fillAndStroke(COLOR.white, COLOR.border);
 
     const innerX = marginX + cardPad;
@@ -153,7 +159,7 @@ function generarComprobantePDF(comprobante) {
     doc.font(FONT.bodySemiBold).fontSize(12).fillColor(COLOR.ink).text(cliente_nombre, innerX, cursorY, { width: innerW });
     cursorY = doc.y + 2;
     if (cliente_doc) {
-      doc.font(FONT.body).fontSize(10.5).fillColor(COLOR.inkSoft).text(`Documento: ${cliente_doc}`, innerX, cursorY, { width: innerW });
+      doc.font(FONT.body).fontSize(10.5).fillColor(COLOR.inkSoft).text(`Cedula de Identidad: ${cliente_doc}`, innerX, cursorY, { width: innerW });
       cursorY = doc.y + 1;
     }
     if (cliente_email) {
@@ -179,7 +185,30 @@ function generarComprobantePDF(comprobante) {
 
     cursorY += 20;
     divider(doc, innerX, cursorY, innerW);
-    cursorY += 24;
+    cursorY += 22;
+
+    // Valor de venta / Saldo (opcionales)
+    if (tieneValorVentaOSaldo) {
+      etiqueta(doc, 'Valor de venta', innerX, cursorY);
+      etiqueta(doc, 'Saldo', innerX, cursorY, { width: innerW, align: 'right' });
+      cursorY += 13;
+      doc
+        .font(FONT.bodySemiBold)
+        .fontSize(12)
+        .fillColor(COLOR.ink)
+        .text(valor_venta !== null && valor_venta !== undefined ? formatMonto(valor_venta, moneda) : '—', innerX, cursorY);
+      doc
+        .font(FONT.bodySemiBold)
+        .fontSize(12)
+        .fillColor(COLOR.ink)
+        .text(saldo !== null && saldo !== undefined ? formatMonto(saldo, moneda) : '—', innerX, cursorY, {
+          width: innerW,
+          align: 'right',
+        });
+      cursorY += 26;
+      divider(doc, innerX, cursorY, innerW);
+      cursorY += 24;
+    }
 
     // Total
     doc
@@ -198,12 +227,12 @@ function generarComprobantePDF(comprobante) {
       const wmW = 440;
       const wmH = wmW * (533 / 923);
       const wmX = (pageW - wmW) / 2;
-      const wmY = cardY + (430 - wmH) / 2;
+      const wmY = cardY + (cardH - wmH) / 2;
       doc.image(WATERMARK_PATH, wmX, wmY, { width: wmW, height: wmH });
     }
 
     // ===== Pie de pagina =====
-    const footerY = cardY + 430 + 26;
+    const footerY = cardY + cardH + 26;
     doc
       .font(FONT.bodySemiBold)
       .fontSize(9.5)

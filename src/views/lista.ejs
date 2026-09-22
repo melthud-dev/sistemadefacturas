@@ -40,6 +40,11 @@
           <div class="empty-state">Aún no hay comprobantes. <a href="/comprobantes/nuevo" style="color:var(--accent);font-weight:600;">Crea el primero</a>.</div>
         </div>
       <% } else { %>
+        <div class="search-box" style="margin-top:22px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A39C8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" id="buscador" placeholder="Buscar por número, cliente, cédula, fecha, monto o estado..." oninput="filtrarComprobantes()" />
+        </div>
+
         <div class="table-card">
           <div class="table-row table-head">
             <span>Número</span>
@@ -49,9 +54,10 @@
             <span>Estado</span>
             <span></span>
           </div>
-          <div class="table-body">
+          <div class="table-body" id="tabla-body">
             <% comprobantes.forEach(c => { %>
-              <a href="/comprobantes/<%= c.id %>" class="table-row">
+              <a href="/comprobantes/<%= c.id %>" class="table-row"
+                 data-search="<%= [c.numero, c.cliente_nombre, c.cliente_doc, c.cliente_email, new Date(c.fecha).toLocaleDateString('es-EC'), c.monto, c.moneda, c.estado === 'enviado' ? 'enviado' : (c.estado === 'emitido' ? 'emitido' : 'error de envío')].filter(Boolean).join(' ').toLowerCase() %>">
                 <span class="numero"><%= c.numero %></span>
                 <span class="cliente"><%= c.cliente_nombre %></span>
                 <span class="fecha"><%= new Date(c.fecha).toLocaleDateString('es-EC') %></span>
@@ -66,9 +72,24 @@
               </a>
             <% }) %>
           </div>
+          <div class="empty-state" id="sin-resultados" style="display:none;">No se encontraron comprobantes que coincidan con la búsqueda.</div>
         </div>
       <% } %>
     </div>
   </div>
+
+  <script>
+    function filtrarComprobantes() {
+      var q = document.getElementById('buscador').value.trim().toLowerCase();
+      var filas = document.querySelectorAll('#tabla-body .table-row');
+      var visibles = 0;
+      filas.forEach(function (fila) {
+        var coincide = fila.getAttribute('data-search').indexOf(q) !== -1;
+        fila.style.display = coincide ? '' : 'none';
+        if (coincide) visibles++;
+      });
+      document.getElementById('sin-resultados').style.display = visibles === 0 ? 'block' : 'none';
+    }
+  </script>
 </body>
 </html>

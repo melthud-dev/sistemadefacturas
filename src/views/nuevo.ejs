@@ -32,7 +32,7 @@
               <input type="text" id="cliente_nombre" name="cliente_nombre" value="<%= form.cliente_nombre || '' %>" required autofocus oninput="actualizarPreview()" />
             </div>
             <div class="field">
-              <label for="cliente_doc">Documento (cédula/RUC)</label>
+              <label for="cliente_doc">Cédula de Identidad</label>
               <input type="text" id="cliente_doc" name="cliente_doc" value="<%= form.cliente_doc || '' %>" />
             </div>
             <div class="field">
@@ -50,8 +50,16 @@
               <textarea id="concepto" name="concepto" rows="2" required oninput="actualizarPreview()"><%= form.concepto || '' %></textarea>
             </div>
             <div class="field">
+              <label for="valor_venta">Valor de Venta</label>
+              <input type="number" id="valor_venta" name="valor_venta" step="0.01" min="0" value="<%= form.valor_venta || '' %>" oninput="actualizarPreview()" />
+            </div>
+            <div class="field">
               <label for="monto">Monto *</label>
               <input type="number" id="monto" name="monto" step="0.01" min="0.01" value="<%= form.monto || '' %>" required oninput="actualizarPreview()" />
+            </div>
+            <div class="field">
+              <label for="saldo">Saldo</label>
+              <input type="number" id="saldo" name="saldo" step="0.01" min="0" value="<%= form.saldo || '' %>" oninput="actualizarPreview()" />
             </div>
             <div class="field">
               <label for="metodo_pago">Método de pago</label>
@@ -98,6 +106,18 @@
 
             <div class="divider"></div>
 
+            <div class="row-between" id="preview-valores" style="display:none;">
+              <div>
+                <div class="label">Valor de venta</div>
+                <div class="val" id="preview-valor-venta" style="margin-top:4px;">—</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="label">Saldo</div>
+                <div class="val" id="preview-saldo" style="margin-top:4px;">—</div>
+              </div>
+            </div>
+            <div class="divider" id="preview-valores-divider" style="display:none;"></div>
+
             <div class="total">
               <div class="label" style="text-transform:none;">Total a pagar</div>
               <div class="amount">USD <span id="preview-monto">0.00</span></div>
@@ -118,10 +138,18 @@
       var nombre = document.getElementById('cliente_nombre').value.trim();
       var concepto = document.getElementById('concepto').value.trim();
       var monto = parseFloat(document.getElementById('monto').value);
+      var valorVenta = parseFloat(document.getElementById('valor_venta').value);
+      var saldo = parseFloat(document.getElementById('saldo').value);
 
       document.getElementById('preview-cliente').textContent = nombre || '—';
       document.getElementById('preview-concepto').textContent = concepto || '—';
       document.getElementById('preview-monto').textContent = isNaN(monto) ? '0.00' : monto.toFixed(2);
+
+      var hayValores = !isNaN(valorVenta) || !isNaN(saldo);
+      document.getElementById('preview-valores').style.display = hayValores ? 'flex' : 'none';
+      document.getElementById('preview-valores-divider').style.display = hayValores ? 'block' : 'none';
+      document.getElementById('preview-valor-venta').textContent = isNaN(valorVenta) ? '—' : 'USD ' + valorVenta.toFixed(2);
+      document.getElementById('preview-saldo').textContent = isNaN(saldo) ? '—' : 'USD ' + saldo.toFixed(2);
     }
     actualizarPreview();
   </script>

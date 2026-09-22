@@ -38,7 +38,9 @@ router.post('/', async (req, res) => {
     cliente_email,
     cliente_doc,
     concepto,
+    valor_venta,
     monto,
+    saldo,
     moneda,
     metodo_pago,
   } = req.body;
@@ -58,6 +60,22 @@ router.post('/', async (req, res) => {
     });
   }
 
+  // Valor de venta y saldo son opcionales
+  const valorVentaNum = valor_venta !== undefined && valor_venta !== '' ? Number(valor_venta) : null;
+  const saldoNum = saldo !== undefined && saldo !== '' ? Number(saldo) : null;
+  if (valorVentaNum !== null && Number.isNaN(valorVentaNum)) {
+    return res.status(400).render('nuevo', {
+      error: 'El valor de venta debe ser un numero.',
+      form: req.body,
+    });
+  }
+  if (saldoNum !== null && Number.isNaN(saldoNum)) {
+    return res.status(400).render('nuevo', {
+      error: 'El saldo debe ser un numero.',
+      form: req.body,
+    });
+  }
+
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -72,15 +90,17 @@ router.post('/', async (req, res) => {
       cliente_email,
       cliente_doc,
       concepto,
+      valor_venta: valorVentaNum,
       monto: montoNum,
+      saldo: saldoNum,
       moneda: moneda || 'USD',
       metodo_pago,
     });
 
     const insertResult = await client.query(
       `INSERT INTO comprobantes
-        (numero, cliente_nombre, cliente_email, cliente_doc, concepto, monto, moneda, metodo_pago, pdf_path, created_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+        (numero, cliente_nombre, cliente_email, cliente_doc, concepto, valor_venta, monto, saldo, moneda, metodo_pago, pdf_path, created_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
        RETURNING *`,
       [
         numero,
@@ -88,7 +108,9 @@ router.post('/', async (req, res) => {
         cliente_email || null,
         cliente_doc || null,
         concepto,
+        valorVentaNum,
         montoNum,
+        saldoNum,
         moneda || 'USD',
         metodo_pago || null,
         relativePath,

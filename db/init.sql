@@ -17,7 +17,9 @@ CREATE TABLE IF NOT EXISTS comprobantes (
     cliente_email   VARCHAR(200),
     cliente_doc     VARCHAR(50),
     concepto        TEXT NOT NULL,
+    valor_venta     NUMERIC(12, 2),
     monto           NUMERIC(12, 2) NOT NULL,
+    saldo           NUMERIC(12, 2),
     moneda          VARCHAR(10) NOT NULL DEFAULT 'USD',
     metodo_pago     VARCHAR(50),
     estado          VARCHAR(20) NOT NULL DEFAULT 'emitido', -- emitido | enviado | error_envio
