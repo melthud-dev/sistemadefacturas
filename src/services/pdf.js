@@ -256,7 +256,7 @@ function generarComprobantePDF(comprobante) {
       .font(FONT.body)
       .fontSize(8.5)
       .fillColor(COLOR.faint)
-      .text('Direccion: Teofilo Saenza y Eduardo Kigman - Riobamba - Ecuador.', marginX, footerY + 15, {
+      .text('Direccion: Teofilo Saenz y Eduardo Kigman - Riobamba - Ecuador.', marginX, footerY + 15, {
         width: cardW,
         align: 'center',
       });
