@@ -59,11 +59,13 @@ Verifica que responda: `curl -I http://localhost:3000/login` debería dar `200 O
 
 ### 4. Crear el usuario de contabilidad
 
+Usa exactamente este comando para que quede el mismo usuario que se usa en el resto de instalaciones de Recibera:
+
 ```bash
-docker compose exec app node scripts/create-user.js contabilidad "una-contrasena-segura" "Nombre Apellido"
+docker compose exec app node scripts/create-user.js contabilidad "TestPass2026!" "Contabilidad BQC"
 ```
 
-Puedes correr este comando varias veces para crear más usuarios o cambiar contraseñas.
+Puedes correr este comando de nuevo (con otro usuario o contraseña) para crear más usuarios o cambiarlos.
 
 ### 5. Publicar con HTTPS real (recomendado): Caddy
 
