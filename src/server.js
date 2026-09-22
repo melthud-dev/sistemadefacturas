@@ -15,7 +15,7 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.set('trust proxy', 1); // detras de Cloudflare Tunnel
+app.set('trust proxy', 1); // detras de un reverse proxy (Caddy, Cloudflare Tunnel, etc)
 
 app.use(morgan('tiny'));
 app.use(express.urlencoded({ extended: true }));

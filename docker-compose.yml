@@ -25,14 +25,37 @@ services:
     volumes:
       - pdfs_data:/usr/src/app/data/pdfs
     ports:
-      - "3000:3000" # solo para pruebas locales; cloudflared es lo que expone a internet
+      - "3000:3000" # acceso directo; en produccion, ademas pasa por Caddy (perfil "prod")
 
-  # Tunel de Cloudflare: expone "app" a internet sin abrir puertos en el router
-  # ni pagar hosting. Requiere crear el tunel en Cloudflare Zero Trust y pegar
-  # el token en TUNNEL_TOKEN dentro de .env. Ver README para el paso a paso.
+  # --- Produccion: HTTPS automatico con Caddy (Let's Encrypt) ---
+  # Solo se levanta con: docker compose --profile prod up -d
+  # Requiere que RECIBERA_DOMAIN (en .env) ya apunte por DNS a este servidor,
+  # y los puertos 80/443 abiertos en el firewall/security group.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    profiles: ["prod"]
+    environment:
+      RECIBERA_DOMAIN: ${RECIBERA_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+  # --- Alternativa a Caddy: Tunel de Cloudflare (no requiere abrir puertos) ---
+  # Solo se levanta con: docker compose --profile cloudflare up -d
+  # Requiere crear el tunel en Cloudflare Zero Trust y pegar el token en
+  # TUNNEL_TOKEN dentro de .env. Ver README para el paso a paso. No usar junto con Caddy.
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
+    profiles: ["cloudflare"]
     command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
     depends_on:
       - app
@@ -40,3 +63,5 @@ services:
 volumes:
   db_data:
   pdfs_data:
+  caddy_data:
+  caddy_config:
