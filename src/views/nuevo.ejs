@@ -32,12 +32,12 @@
               <input type="text" id="cliente_nombre" name="cliente_nombre" value="<%= form.cliente_nombre || '' %>" required autofocus oninput="actualizarPreview()" />
             </div>
             <div class="field">
-              <label for="cliente_doc">Cédula de Identidad</label>
-              <input type="text" id="cliente_doc" name="cliente_doc" value="<%= form.cliente_doc || '' %>" />
+              <label for="cliente_doc">Cédula de Identidad *</label>
+              <input type="text" id="cliente_doc" name="cliente_doc" value="<%= form.cliente_doc || '' %>" required />
             </div>
             <div class="field">
-              <label for="cliente_email">Correo del cliente</label>
-              <input type="email" id="cliente_email" name="cliente_email" value="<%= form.cliente_email || '' %>" placeholder="Para enviar el comprobante" oninput="actualizarPreview()" />
+              <label for="cliente_email">Correo del cliente *</label>
+              <input type="email" id="cliente_email" name="cliente_email" value="<%= form.cliente_email || '' %>" placeholder="Para enviar el comprobante" required oninput="actualizarPreview()" />
             </div>
           </div>
 
@@ -46,28 +46,28 @@
           <div class="form-section-title">Detalle del pago</div>
           <div class="form-grid">
             <div class="field span-2">
-              <label for="programa_academico">Programa Académico</label>
-              <input type="text" id="programa_academico" name="programa_academico" value="<%= form.programa_academico || '' %>" oninput="actualizarPreview()" />
+              <label for="programa_academico">Programa Académico *</label>
+              <input type="text" id="programa_academico" name="programa_academico" value="<%= form.programa_academico || '' %>" required oninput="actualizarPreview()" />
             </div>
             <div class="field span-2">
               <label for="concepto">Concepto *</label>
               <textarea id="concepto" name="concepto" rows="2" required oninput="actualizarPreview()"><%= form.concepto || '' %></textarea>
             </div>
             <div class="field">
-              <label for="valor_venta">Valor de Venta</label>
-              <input type="number" id="valor_venta" name="valor_venta" step="0.01" min="0" value="<%= form.valor_venta || '' %>" oninput="actualizarPreview()" />
+              <label for="valor_venta">Valor de Venta *</label>
+              <input type="number" id="valor_venta" name="valor_venta" step="0.01" min="0" value="<%= form.valor_venta || '' %>" required oninput="actualizarPreview()" />
             </div>
             <div class="field">
               <label for="monto">Monto *</label>
               <input type="number" id="monto" name="monto" step="0.01" min="0.01" value="<%= form.monto || '' %>" required oninput="actualizarPreview()" />
             </div>
             <div class="field">
-              <label for="saldo">Saldo</label>
-              <input type="number" id="saldo" name="saldo" step="0.01" min="0" value="<%= form.saldo || '' %>" oninput="actualizarPreview()" />
+              <label for="saldo">Saldo *</label>
+              <input type="number" id="saldo" name="saldo" step="0.01" min="0" value="<%= form.saldo || '' %>" required oninput="actualizarPreview()" />
             </div>
             <div class="field">
-              <label for="metodo_pago">Método de pago</label>
-              <select id="metodo_pago" name="metodo_pago">
+              <label for="metodo_pago">Método de pago *</label>
+              <select id="metodo_pago" name="metodo_pago" required>
                 <option value="Transferencia">Transferencia</option>
                 <option value="Efectivo">Efectivo</option>
                 <option value="Tarjeta">Tarjeta</option>
@@ -133,7 +133,7 @@
 
           <div class="info-box">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B6B4F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M4 4h16v16H4z"/><path d="M4 8h16M9 21V8"/></svg>
-            <p>Al guardar se genera el PDF, se archiva automáticamente y se envía por correo al cliente (si registraste su correo).</p>
+            <p>Al guardar se genera el PDF, se archiva automáticamente y se envía por correo al cliente.</p>
           </div>
         </div>
       </div>

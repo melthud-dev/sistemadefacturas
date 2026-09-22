@@ -46,9 +46,20 @@ router.post('/', async (req, res) => {
     metodo_pago,
   } = req.body;
 
-  if (!cliente_nombre || !concepto || !monto) {
+  // Todos los campos son obligatorios antes de generar y enviar el comprobante.
+  if (
+    !cliente_nombre ||
+    !cliente_doc ||
+    !cliente_email ||
+    !programa_academico ||
+    !concepto ||
+    !valor_venta ||
+    !monto ||
+    !saldo ||
+    !metodo_pago
+  ) {
     return res.status(400).render('nuevo', {
-      error: 'Nombre del cliente, concepto y monto son obligatorios.',
+      error: 'Todos los campos son obligatorios: nombre, cedula, correo, programa academico, concepto, valor de venta, monto, saldo y metodo de pago.',
       form: req.body,
     });
   }
@@ -61,18 +72,18 @@ router.post('/', async (req, res) => {
     });
   }
 
-  // Valor de venta y saldo son opcionales
-  const valorVentaNum = valor_venta !== undefined && valor_venta !== '' ? Number(valor_venta) : null;
-  const saldoNum = saldo !== undefined && saldo !== '' ? Number(saldo) : null;
-  if (valorVentaNum !== null && Number.isNaN(valorVentaNum)) {
+  const valorVentaNum = Number(valor_venta);
+  if (Number.isNaN(valorVentaNum) || valorVentaNum <= 0) {
     return res.status(400).render('nuevo', {
-      error: 'El valor de venta debe ser un numero.',
+      error: 'El valor de venta debe ser un numero mayor a 0.',
       form: req.body,
     });
   }
-  if (saldoNum !== null && Number.isNaN(saldoNum)) {
+
+  const saldoNum = Number(saldo);
+  if (Number.isNaN(saldoNum) || saldoNum < 0) {
     return res.status(400).render('nuevo', {
-      error: 'El saldo debe ser un numero.',
+      error: 'El saldo debe ser un numero valido (0 o mayor).',
       form: req.body,
     });
   }
